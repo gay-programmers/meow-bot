@@ -10,7 +10,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 main.py --prefix \"!\" --token $DISCORD_TOKEN"
+args = "python3 main.py $DISCORD_TOKEN \"!\""
 
 [nix]
 channel = "stable-25_05"
