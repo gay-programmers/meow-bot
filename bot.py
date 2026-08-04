@@ -1,9 +1,10 @@
 import datetime
 import functools
-import typing
-import discord
-import time
 import sys
+import time
+import typing
+
+import discord
 from discord.ext import commands
 
 if len(sys.argv) < 3:
@@ -13,11 +14,11 @@ if len(sys.argv) < 3:
     sys.exit(1)
 token = sys.argv[1]
 prefix = sys.argv[2]
-print(f"Token recieved: {repr(token)}")
+print(f"Token recieved: {token!r}")
 time.sleep(1)
-print(f"\033[1A\033[2K\rPrefix recieved: {repr(prefix)}")
+print(f"\033[1A\033[2K\rPrefix recieved: {prefix!r}")
 time.sleep(1)
-print(f"\033[1A\033[2K\rLoading bot...")
+print("\033[1A\033[2K\rLoading bot...")
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None)
@@ -29,7 +30,7 @@ async def on_ready():
 
 
 def command(
-    required_permissions: list[str] = [],
+    required_permissions: list[str] | None = None,
 ) -> typing.Callable[[typing.Callable], typing.Callable]:
     def decorator(func: typing.Callable) -> typing.Callable:
         @bot.hybrid_command()
@@ -39,7 +40,7 @@ def command(
                 await ctx.reply(
                     "You must be a member of this server to use this command."
                 )
-            elif not all(
+            elif required_permissions and not all(
                 getattr(ctx.author.guild_permissions, perm)
                 for perm in required_permissions
             ):
@@ -48,8 +49,8 @@ def command(
                 )
             else:
                 try:
-                    await func(*args, **kwargs)
-                except Exception as e:
+                    await func(ctx, *args, **kwargs)
+                except Exception as e:  # noqa: BLE001
                     await ctx.reply(f"An error occured: `{type(e).__name__}: {e}`")
 
         return wrapper
@@ -77,9 +78,9 @@ async def mute(
         case "weeks" | "week" | "w":
             duration *= 604800
         case _:
-            raise ValueError(f"Invalid unit: {repr(unit)}")
+            raise ValueError(f"Invalid unit: {unit!r}")
     await user.timeout(
-        datetime.datetime.now() + datetime.timedelta(seconds=duration), reason=reason
+        datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=duration), reason=reason
     )
     await ctx.reply(
         f":checkmark: Successfully muted {user.mention} for {duration} {unit}!"
@@ -114,7 +115,7 @@ async def say(ctx: commands.Context, message: str, times: int = 1) -> None:
 @command(["manage_messages"])
 async def purge(ctx: commands.Context, amount: int = 100) -> None:
     if not 1 <= amount <= 100:
-        raise ValueError(f"Amount must be between 1 and 100.")
+        raise ValueError("Amount must be between 1 and 100.")
     elif not isinstance(ctx.channel, discord.TextChannel):
         raise ValueError("This command can only be used in a text channel.")
     else:
@@ -169,7 +170,7 @@ async def deleterole(ctx: commands.Context, role: discord.Role) -> None:
     await ctx.reply(f":checkmark: Successfully deleted {role.mention}!")
 
 
-@command(["moderate_users"])
+@command(["manage_roles"])
 async def addrole(
     ctx: commands.Context, user: discord.Member, role: discord.Role
 ) -> None:
@@ -177,7 +178,7 @@ async def addrole(
     await ctx.reply(f":checkmark: Successfully added {role.mention} to {user.mention}!")
 
 
-@command(["moderate_users"])
+@command(["manage_roles"])
 async def removerole(
     ctx: commands.Context, user: discord.Member, role: discord.Role
 ) -> None:
@@ -224,6 +225,7 @@ async def mentionable(ctx: commands.Context, role: discord.Role) -> None:
 @command(["manage_roles"])
 async def unmentionable(ctx: commands.Context, role: discord.Role) -> None:
     await role.edit(mentionable=False)
+    await ctx.reply(f":checkmark: Successfully made {role.mention} unmentionable!")
 
 
 @command(["manage_channels"])
@@ -243,7 +245,7 @@ async def makechannel(
         case "threads" | "forum":
             await ctx.guild.create_forum(name=name, category=category)
         case _:
-            raise ValueError(f"Invalid channel type: {repr(type)}")
+            raise ValueError(f"Invalid channel type: {type!r}")
     await ctx.reply(f":checkmark: Successfully created channel {name}!")
 
 
