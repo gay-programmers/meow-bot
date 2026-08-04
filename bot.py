@@ -257,7 +257,7 @@ async def deletechannel(ctx: commands.Context, channel: discord.TextChannel) -> 
 
 
 helptext = f"""```
-Help for PluBot:
+Help for MeowBot <UwU>:
 EXAMPLE: {prefix}command <required> [optional] - description
 {prefix}help - Shows this message
 {prefix}mute <user> <duration> [unit] [reason] - Mutes a user for a specified duration
