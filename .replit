@@ -1,1 +1,17 @@
 modules = ["python-3.12"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "sequential"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py --prefix \"!\" --token $DISCORD_TOKEN"
+
+[nix]
+channel = "stable-25_05"
+packages = []
