@@ -26,7 +26,8 @@ bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
-    print(f"\033[1A\033[2K\rLogged in as {bot.user}")
+    print(f"\033[1A\033[2K\033[1A\033[2K\033[1A\033[2K\rLogged in as {bot.user}")
+    bot.tree.sync()
 
 
 def command(
