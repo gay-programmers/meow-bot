@@ -3,6 +3,7 @@ import functools
 import sys
 import time
 import typing
+import subprocess
 
 import discord
 from discord.ext import commands
@@ -256,6 +257,12 @@ async def deletechannel(ctx: commands.Context, channel: discord.TextChannel) -> 
     await ctx.reply(f":checkmark: Successfully deleted {channel.mention}!")
 
 
+@command([])
+async def update(ctx: commands.Context) -> None:
+    subprocess.run(["bash", "update_bot.sh"])
+    ctx.reply("Done!")
+
+
 helptext = f"""```
 Help for MeowBot <UwU>:
 EXAMPLE: {prefix}command <required> [optional] - description
@@ -280,6 +287,7 @@ EXAMPLE: {prefix}command <required> [optional] - description
 {prefix}unmentionable <role> - Makes a role unmentionable
 {prefix}makechannel <name> [category] [type] - Creates a channel
 {prefix}deletechannel <channel> - Deletes a channel
+{prefix}update - Update the bot.
 ```"""
 
 
