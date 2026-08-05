@@ -139,7 +139,7 @@ async def unban(ctx: commands.Context, user: discord.User) -> None:
     await ctx.guild.unban(user)
 
 
-@command(["manage_server"])
+@command(["manage_guild"])
 async def kickbot(ctx: commands.Context) -> None:
     if ctx.guild is None:
         raise ValueError("This command can only be used in a server.")
