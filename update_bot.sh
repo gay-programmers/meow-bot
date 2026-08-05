@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
-cd /home/firebot/git/meow-bot
+if [ -d /home/firebot ]; then
+    cd /home/firebot/git/meow-bot
+else
+    cd ~/meow-bot
+fi
 git fetch
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse @{u})

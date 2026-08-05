@@ -260,7 +260,7 @@ async def deletechannel(ctx: commands.Context, channel: discord.TextChannel) -> 
 @command([])
 async def update(ctx: commands.Context) -> None:
     subprocess.run(["bash", "update_bot.sh"])
-    ctx.reply("Done!")
+    await ctx.reply("Done!")
 
 
 helptext = f"""```
